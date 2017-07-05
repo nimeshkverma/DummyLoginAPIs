@@ -1,0 +1,16 @@
+venv
+fvenv
+.env
+*.pyc
+settings.py
+*.log
+.cache
+*.swp
+*.swo
+*.DS_Store
+*.pfx
+*jks
+*sig
+*.class
+db.sqlite3
+
