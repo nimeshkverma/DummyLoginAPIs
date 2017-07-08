@@ -29,7 +29,7 @@ class Config(APIView):
             'username': 'NimeshVerma',
             'bio': 'The Startup Guy',
             'email': 'nimesh.aug11@gmail.com',
-            'pic': '',
+            'pic': 'https://3.bp.blogspot.com/-nntVuEkRj74/WT-rFCAxwVI/AAAAAAAAO8E/npB93OqbX1wk0_vTlGKbUcn9s_p_IeYoACK4B/s113/17457629_10206549512735716_6915883983930611284_n.jpg',
         }
         return MetaDataResponse(data, status=status.HTTP_200_OK)
 
