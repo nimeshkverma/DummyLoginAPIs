@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, mixins, generics
 
+from agents_config import AGENTS_ID_MAP, AGENTS_SECRET_MAP
+
 
 def param_check(data, params):
     all_params_present = True
@@ -14,23 +16,31 @@ def param_check(data, params):
     return all_params_present, message
 
 
+def session_check(data):
+    session_valid = False
+    if AGENTS_ID_MAP.get(int(data.get("agent_id", 0))) and AGENTS_ID_MAP[int(data.get("agent_id", 0))] == str(data.get("session_token", "")):
+        session_valid = True
+    return session_valid
+
+
 class Login(APIView):
 
     def post(self, request):
         params = {
-            'username': str,
-            'password': str,
-            'source': str,
+            'username': unicode,
+            'password': unicode,
+            'source': unicode,
+            'app_registration_id': unicode,
             'source_version': int,
         }
         all_params_present, message = param_check(request.data, params)
-        if all_params_present:
+        agent_secret_key = request.data.get(
+            'username', '') + '_' + request.data.get('password', '')
+        data = AGENTS_SECRET_MAP.get(agent_secret_key)
+        if all_params_present and data:
             response = {
                 "meta": "",
-                "data": {
-                    "customer_id": 11,
-                    "session_token": "upwards_11_uIXGGbHaTPuaaVNpAsdwFDvrahQMGfAn"
-                }
+                "data": data
             }
             return Response(response, status=status.HTTP_200_OK)
         else:
@@ -43,17 +53,17 @@ class Login(APIView):
 
 class Logout(APIView):
 
-    def get(self, request, customer_id):
+    def post(self, request, agent_id):
         data = {
-            "customer_id": customer_id,
+            "agent_id": agent_id,
             "session_token": request.META.get("HTTP_SESSION_TOKEN")
         }
         params = {
-            "customer_id": int,
+            "agent_id": unicode,
             "session_token": str
         }
         all_params_present, message = param_check(data, params)
-        if all_params_present:
+        if all_params_present and session_check(data):
             response = {
                 "meta": "",
                 "data": {}
@@ -69,17 +79,17 @@ class Logout(APIView):
 
 class NoticeBoard(APIView):
 
-    def get(self, request, customer_id):
+    def get(self, request, agent_id):
         data = {
-            "customer_id": customer_id,
+            "agent_id": agent_id,
             "session_token": request.META.get("HTTP_SESSION_TOKEN")
         }
         params = {
-            "customer_id": int,
+            "agent_id": unicode,
             "session_token": str
         }
         all_params_present, message = param_check(data, params)
-        if all_params_present:
+        if all_params_present and session_check(data):
             response = {
                 "meta": "",
                 "data": {
@@ -104,17 +114,17 @@ class NoticeBoard(APIView):
 
 class CustomerPickup(APIView):
 
-    def get(self, request, customer_id):
+    def get(self, request, agent_id):
         data = {
-            "customer_id": customer_id,
+            "agent_id": agent_id,
             "session_token": request.META.get("HTTP_SESSION_TOKEN")
         }
         params = {
-            "customer_id": int,
+            "agent_id": unicode,
             "session_token": str
         }
         all_params_present, message = param_check(data, params)
-        if all_params_present:
+        if all_params_present and session_check(data):
             response = {
                 "meta": "",
                 "data":  [
@@ -240,21 +250,23 @@ class CustomerPickup(APIView):
 
 class DocumentUploaded(APIView):
 
-    def get(self, request, customer_id):
+    def get(self, request, agent_id, customer_id):
         data = {
             "customer_id": customer_id,
+            "agent_id": agent_id,
             "session_token": request.META.get("HTTP_SESSION_TOKEN")
         }
         params = {
-            "customer_id": int,
+            "customer_id": unicode,
+            "agent_id": unicode,
             "session_token": str
         }
         all_params_present, message = param_check(data, params)
-        if all_params_present:
+        if all_params_present and session_check(data):
             response = {
                 "meta": "",
                 "data":  {
-                    'customer_id': auth_data['customer_id'],
+                    'customer_id': customer_id,
                     'documents_uploaded': {
                         1: False,
                         2: False,

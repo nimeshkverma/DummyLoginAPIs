@@ -6,12 +6,14 @@ from . import views
 urlpatterns = [
     url(r'^agent/login/$',
         views.Login.as_view(), name='Login'),
-    url(r'^agent/(?P<customer_id>[0-9]+)/logout/$',
+    url(r'^agent/(?P<agent_id>[0-9]+)/logout/$',
         views.Logout.as_view(), name='Logout'),
-    url(r'^agent/(?P<customer_id>[0-9]+)/noticeboard/$',
+    url(r'^agent/(?P<agent_id>[0-9]+)/noticeboard/$',
         views.NoticeBoard.as_view(), name='NoticeBoard'),
-    url(r'^agent/(?P<customer_id>[0-9]+)/customer_pickup/$',
+    url(r'^agent/(?P<agent_id>[0-9]+)/customer/$',
         views.CustomerPickup.as_view(), name='CustomerPickup'),
+    url(r'^agent/(?P<agent_id>[0-9]+)/customer/(?P<customer_id>[0-9]+)/documents_uploaded/$',
+        views.DocumentUploaded.as_view(), name='DocumentUploaded'),
     url(r'^customer/document_type/$',
         views.DocumentType.as_view(), name='DocumentType'),
 ]
